@@ -61,6 +61,10 @@ struct CollectorInvocation<Collector, void (Args...)> {
   }
 };
 
+
+//TODO hope i make connection for disconnect without access to signal
+using Connection = size_t;
+
 /// ProtoSignal template specialised for the callback signature and collector.
 template<class Collector, class R, class... Args>
 class ProtoSignal<R (Args...), Collector> : private CollectorInvocation<Collector, R (Args...)> {
@@ -105,9 +109,9 @@ public:
   }
 
   /// Operator to add a new function or lambda as signal handler, returns a handler connection ID.
-  size_t connect (const CbFunction &cb)      { return add_cb(cb); }
+  Connection connect (const CbFunction &cb)      { return add_cb(cb); }
   /// Operator to remove a signal handler through it connection ID, returns if a handler was removed.
-  bool   disconnect (size_t connection)         { return remove_cb(connection); }
+  bool   disconnect (Connection connection)         { return remove_cb(connection); }
 
   /// Emit a signal, i.e. invoke all its callbacks and collect return types with the Collector.
   CollectorResult
