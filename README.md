@@ -25,6 +25,6 @@ void Init() {
 ```c++
 void func() {
   // ...
-  sig.emit(1.0f, 7, "xxxx");
+  sig.(1.0f, 7, "xxxx");
 }
 ```
