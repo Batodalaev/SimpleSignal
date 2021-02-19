@@ -72,7 +72,7 @@ public:
     size_t id1 = sig1.connect(float_callback);
     size_t id2 = sig1.connect([] (float, int i, std::string) { accu += string_printf ("int: %d\n", i); return 0; });
     size_t id3 = sig1.connect([] (float, int, const std::string &s) { accu += string_printf ("string: %s\n", s.c_str()); return 0; });
-    sig1.emit (.3, 4, "huhu");
+    sig1(.3, 4, "huhu");
     bool success;
     success = sig1.disconnect(id1); assert (success == true);  success = sig1.disconnect(id1); assert (success == false);
     success = sig1.disconnect(id2); assert (success == true);  success = sig1.disconnect(id3); assert (success == true);
@@ -80,12 +80,12 @@ public:
     Foo foo;
     sig1.connect(Simple::slot (foo, &Foo::foo_bool));
     sig1.connect(Simple::slot (&foo, &Foo::foo_bool));
-    sig1.emit (.5, 1, "12");
+    sig1(.5, 1, "12");
 
     Simple::Signal<void (std::string, int)> sig2;
     sig2.connect([] (std::string msg, int) { accu += string_printf ("msg: %s", msg.c_str()); });
     sig2.connect([] (std::string, int d)   { accu += string_printf (" *%d*\n", d); });
-    sig2.emit ("in sig2", 17);
+    sig2("in sig2", 17);
 
     accu += "DONE";
 
@@ -117,7 +117,7 @@ class TestCollectorVector {
     sig_vector.connect(handler1);
     sig_vector.connect(handler42);
     sig_vector.connect(handler777);
-    std::vector<int> results = sig_vector.emit();
+    std::vector<int> results = sig_vector();
     const std::vector<int> reference = { 777, 42, 1, 42, 777, };
     assert(5 == sig_vector.size());
     assert (results == reference);
@@ -140,7 +140,7 @@ class TestCollectorUntil0 {
     sig_until0.connect(Simple::slot (self, &TestCollectorUntil0::handler_false));
     sig_until0.connect(Simple::slot (self, &TestCollectorUntil0::handler_abort));
     assert (!self.check1 && !self.check2);
-    const bool result = sig_until0.emit();
+    const bool result = sig_until0();
     assert (!result && self.check1 && self.check2);
   }
 };
@@ -161,7 +161,7 @@ class TestCollectorWhile0 {
     sig_while0.connect(Simple::slot (self, &TestCollectorWhile0::handler_1));
     sig_while0.connect(Simple::slot (self, &TestCollectorWhile0::handler_abort));
     assert (!self.check1 && !self.check2);
-    const bool result = sig_while0.emit();
+    const bool result = sig_while0();
     assert (result == true && self.check1 && self.check2);
   }
 };
@@ -176,7 +176,7 @@ bench_simple_signal()
   uint64_t i;
   for (i = 0; i < 999999; i++)
     {
-      sig_increment.emit (nullptr, 1);
+      sig_increment(nullptr, 1);
     }
   const uint64_t benchdone = timestamp_benchmark();
   const uint64_t end_counter = TestCounter::get();

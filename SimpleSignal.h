@@ -111,7 +111,7 @@ public:
 
   /// Emit a signal, i.e. invoke all its callbacks and collect return types with the Collector.
   CollectorResult
-  emit (Args... args) const
+  operator() (Args... args) const
   {
     Collector collector;
     for (auto &slot : callback_list_) {
@@ -140,12 +140,12 @@ public:
  * and optionally a return result collector class type.
  * Signal callbacks can be added with operator+= to a signal and removed with operator-=, using
  * a callback connection ID return by operator+= as argument.
- * The callbacks of a signal are invoked with the emit() method and arguments according to the signature.
- * The result returned by emit() depends on the signal collector class. By default, the result of
- * the last callback is returned from emit(). Collectors can be implemented to accumulate callback
+ * The callbacks of a signal are invoked with the operator() method and arguments according to the signature.
+ * The result returned by operator() depends on the signal collector class. By default, the result of
+ * the last callback is returned from operator(). Collectors can be implemented to accumulate callback
  * results or to halt a running emissions in correspondance to callback results.
  * The signal implementation is safe against recursion, so callbacks may be removed and
- * added during a signal emission and recursive emit() calls are also safe.
+ * added during a signal emission and recursive operator() calls are also safe.
  * The overhead of an unused signal is intentionally kept very low, around the size of a single pointer.
  * Note that the Signal template types is non-copyable.
  */
